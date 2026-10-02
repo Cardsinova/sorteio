@@ -1,0 +1,1222 @@
+/* Estilos do palco. Versão 2 (2026-10-02): fundo branco, festa colorida e roda da sorte.
+   Regra da casa continua: o que se move anima só transform e opacity.
+   Painéis do operador: paineis.css. */
+
+/* ---------- estrutura ---------- */
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  isolation: isolate;
+  /* o confete voa para fora da tela; sem isto, cria rolagem para o lado */
+  overflow-x: clip;
+}
+
+.faixa-festa {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 40;
+  background: var(--grad-festa);
+}
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fundo-manchas {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(38% 48% at 0% 0%, rgba(224, 27, 116, 0.13), transparent 70%),
+    radial-gradient(38% 48% at 100% 0%, rgba(241, 152, 0, 0.16), transparent 70%),
+    radial-gradient(42% 52% at 0% 100%, rgba(47, 111, 237, 0.12), transparent 70%),
+    radial-gradient(42% 52% at 100% 100%, rgba(22, 176, 122, 0.13), transparent 70%),
+    radial-gradient(34% 44% at 28% 52%, rgba(156, 63, 214, 0.09), transparent 70%);
+}
+
+.fundo-queda {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+  transition: opacity 0.8s var(--ease);
+}
+
+.fundo-queda--descansa {
+  opacity: 0;
+  transition-duration: 0.5s;
+}
+
+.queda {
+  position: absolute;
+  display: block;
+  /* começa fora da tela (em cima); a animação leva para baixo */
+  transform: translateY(-8vh);
+}
+
+.fundo-queda--parada .queda {
+  transform: none;
+}
+
+.queda-fita {
+  display: block;
+  width: 14px;
+  height: 6px;
+  border-radius: 1.5px;
+}
+
+.queda-bolinha {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.queda svg {
+  display: block;
+}
+
+.ponto {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  background: var(--surface);
+  color: var(--ink-2);
+}
+
+/* ---------- barra do topo ---------- */
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 70px;
+  padding: 6px clamp(16px, 3vw, 32px) 0;
+  /* fundo branco que some para baixo: os confetes do fundo nascem por baixo da
+     barra, em vez de passar por cima do logo e dos botões */
+  background: linear-gradient(#ffffff 72%, rgba(255, 255, 255, 0));
+  transition: opacity 0.3s var(--ease);
+}
+
+.barra-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.barra-simbolo {
+  width: 30px;
+  height: 30px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.barra-nome {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.barra-sub {
+  color: var(--ink-2);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.barra-divisor {
+  width: 1px;
+  height: 18px;
+  background: var(--border-strong);
+  flex-shrink: 0;
+}
+
+.barra-acoes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.botao-barra,
+.botao-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.botao-barra {
+  padding: 0 14px;
+}
+
+.botao-icone {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.botao-barra:hover:not(:disabled),
+.botao-icone:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--border-strong);
+}
+
+.botao-barra:disabled,
+.botao-icone:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.botao-icone[aria-pressed='true'] {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.contador {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--rosa);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-grid;
+  place-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- palco ---------- */
+
+.palco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(8px, 3vh, 40px) clamp(16px, 3vw, 48px);
+  min-width: 0;
+}
+
+/* Roda à esquerda, informações à direita. A roda tem o tamanho que a tela
+   deixar (altura manda), até 800px. */
+.arena {
+  --roda: min(74vh, 48vw, 800px);
+  display: grid;
+  grid-template-columns: var(--roda) minmax(0, 620px);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(32px, 5vw, 100px);
+  width: 100%;
+}
+
+.arena-roda {
+  display: flex;
+  justify-content: center;
+}
+
+.arena-info {
+  min-width: 0;
+}
+
+.preparo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(16px, 2.8vh, 30px);
+}
+
+.cabeca {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.bloco-largo {
+  width: 100%;
+}
+
+.cabeca--centro {
+  align-items: center;
+  text-align: center;
+}
+
+.cabeca-titulo {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: clamp(15px, 2vh, 20px);
+  font-weight: 600;
+}
+
+.cabeca-premio {
+  margin: 2px 0 0;
+  padding-bottom: 0.08em; /* folga para o degradê não cortar a perna do "g" */
+  font-size: clamp(40px, 8vh, 96px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  background: var(--grad-titulo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cabeca-sub {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: clamp(14px, 1.8vh, 17px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- roda ---------- */
+
+.roda {
+  position: relative;
+  width: var(--roda);
+  height: var(--roda);
+  flex-shrink: 0;
+  /* entra crescendo quando a página abre (o giro de entrada é do Roda.jsx) */
+  animation: roda-entra 1.4s var(--ease) both;
+}
+
+@keyframes roda-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+}
+
+.roda::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    0 34px 80px -26px rgba(102, 16, 129, 0.55),
+    0 0 0 clamp(6px, 1.2vh, 12px) rgba(255, 255, 255, 0.7);
+}
+
+.roda-aro {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.roda-lampadas {
+  position: absolute;
+  inset: 0;
+  will-change: opacity;
+}
+
+/* 28 lâmpadas no aro, no meio entre os raios 88,5 e 99 do desenho (93,75 de 200). */
+.lampada {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3.3%;
+  height: 3.3%;
+  transform: translate(-50%, -50%) rotate(var(--a)) translateY(calc(var(--roda) * -0.46875));
+}
+
+.lampada i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%, #ffffff 0 22%, #ffe58a 48%, #f5b400 100%);
+  box-shadow: 0 0 8px rgba(255, 214, 90, 0.9);
+}
+
+/* As lâmpadas RESPIRAM, alternando pares e ímpares, em vez de piscar como estrobo
+   (o pisca de 0,22 s foi parte do "tremendo" que o Enzo viu).
+   Esperando: devagar. Girando: mais rápido, mas ainda suave. Parou: todas juntas, três vezes. */
+.roda--parada .roda-lampadas {
+  animation: respirar 1.6s ease-in-out infinite alternate;
+}
+
+.roda--parada .roda-lampadas--b {
+  animation-delay: -1.6s;
+}
+
+.roda--girando .roda-lampadas {
+  animation: respirar 0.5s ease-in-out infinite alternate;
+}
+
+.roda--girando .roda-lampadas--b {
+  animation-delay: -0.5s;
+}
+
+@keyframes respirar {
+  to {
+    opacity: 0.35;
+  }
+}
+
+.roda--travada .roda-lampadas {
+  animation: festejar 0.4s ease-in-out 6 alternate;
+}
+
+@keyframes festejar {
+  to {
+    opacity: 0.25;
+  }
+}
+
+.roda-disco {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.roda-disco svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fatia {
+  stroke: #ffffff;
+  stroke-width: 0.35;
+  transition: opacity 0.6s var(--ease);
+}
+
+.fatia-nome {
+  font-family: var(--font);
+  font-weight: 700;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease);
+}
+
+/* Enquanto as fatias se ajustam (alguém saiu da roda), os nomes somem e voltam
+   já no lugar novo: escrito em cima de uma fatia que muda de tamanho, ficaria torto. */
+.roda--mudando .fatia-nome {
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+/* Parou: um véu branco cobre a roda, menos o campo do ganhador (Roda.jsx).
+   Camada própria e só opacidade: apagar 1.241 nomes um a um repintaria a roda inteira. */
+.roda-disco .roda-veu {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+
+.roda--travada .roda-veu {
+  opacity: 0.8;
+}
+
+.roda-centro {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24%;
+  height: 24%;
+  margin: -12% 0 0 -12%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    inset 0 0 0 clamp(3px, 0.5vh, 5px) #661081,
+    0 8px 24px -8px rgba(60, 10, 80, 0.5);
+}
+
+.roda-marca {
+  width: 64%;
+  height: 64%;
+  color: #661081;
+}
+
+/* A seta se inclina com a velocidade e bate nos pinos quando a roda está devagar
+   (Roda.jsx gira em volta da cabeça redonda). */
+.roda-ponteiro {
+  position: absolute;
+  left: 50%;
+  top: -3%;
+  width: 9%;
+  margin-left: -4.5%;
+  transform-origin: 50% 36%;
+  z-index: 2;
+}
+
+.roda-ponteiro svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ---------- caixa "na seta" ---------- */
+
+.na-seta {
+  --cor: #d8d1e2;
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  width: 100%;
+  padding: clamp(14px, 2vh, 20px) 22px clamp(14px, 2vh, 20px) 18px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  background: #ffffff;
+  box-shadow: 0 20px 44px -26px rgba(70, 20, 90, 0.4);
+  transition:
+    transform 0.5s var(--ease),
+    border-color 0.3s;
+}
+
+.na-seta-cor {
+  width: 12px;
+  flex-shrink: 0;
+  border-radius: 99px;
+  background: var(--cor);
+  transition: background-color 0.18s;
+}
+
+.na-seta--pronto .na-seta-cor {
+  background: linear-gradient(180deg, #661081, #2f6fed, #16b07a, #ffc928, #f19800, #e01b74);
+}
+
+.na-seta-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.na-seta-rotulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.na-seta-nome {
+  display: block;
+  min-height: 1.15em;
+  font-size: clamp(22px, 3.4vh, 36px);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.na-seta-detalhe {
+  min-height: 1.5em;
+  font-size: clamp(14px, 1.8vh, 16px);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.na-seta--pronto .na-seta-nome {
+  color: var(--ink-2);
+}
+
+/* Parou: borda em degradê e um leve crescimento antes da revelação. */
+.na-seta--parou {
+  border-color: transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    var(--grad-titulo) border-box;
+  transform: scale(1.03);
+}
+
+.na-seta--parou .na-seta-rotulo {
+  color: var(--rosa);
+}
+
+.numeros {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--ink-2);
+  font-size: clamp(14px, 1.8vh, 17px);
+  transition: opacity 0.3s;
+}
+
+.numeros-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.numeros-regra {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 0.9em;
+}
+
+.numeros strong {
+  color: var(--ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.numeros--apagado {
+  opacity: 0.4;
+}
+
+/* ---------- botão principal ---------- */
+
+.botao-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: clamp(56px, 7.4vh, 68px);
+  padding: 0 28px 0 34px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--grad-botao);
+  color: #ffffff;
+  font-size: clamp(18px, 2.4vh, 22px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  box-shadow: 0 18px 36px -14px rgba(216, 27, 110, 0.6);
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.2s,
+    opacity 0.2s;
+}
+
+.botao-principal:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px -14px rgba(216, 27, 110, 0.7);
+}
+
+.botao-principal:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.botao-principal:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.botao-principal kbd {
+  border: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.botao-principal:focus-visible {
+  outline-offset: 4px;
+}
+
+.botao-sortear {
+  min-width: 260px;
+}
+
+/* ---------- revelação ---------- */
+
+.ganhador {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(12px, 2vh, 20px);
+  text-align: left;
+}
+
+.ganhador-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 0;
+  padding: 9px 20px 9px 16px;
+  border-radius: 999px;
+  background: linear-gradient(100deg, #c2410c, #be185d);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: clamp(15px, 2vh, 19px);
+  box-shadow: 0 12px 26px -12px rgba(190, 24, 93, 0.6);
+}
+
+.ganhador-selo .ponto {
+  opacity: 0.7;
+}
+
+.ganhador-nome {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(40px, 7.4vh, 92px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+
+/* A máscara de cada palavra tem folga em cima e embaixo: sem ela,
+   o acento e a perna do "g" ficam cortados. */
+.palavra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.08em 0.02em 0.16em;
+  margin: -0.08em -0.02em -0.16em;
+}
+
+.palavra > span {
+  display: inline-block;
+}
+
+.ganhador-local {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: clamp(15px, 2vh, 20px);
+}
+
+/* Dois cartões: o número do pedido (estreito) e o nome do cliente (o resto). */
+.fatos {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin: 4px 0 0;
+}
+
+.fato {
+  --fundo: var(--surface-2);
+  --forte: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: clamp(12px, 1.8vh, 18px) 18px;
+  border-radius: 18px;
+  background: var(--fundo);
+}
+
+.fato--roxo {
+  --fundo: rgba(102, 16, 129, 0.08);
+  --forte: #661081;
+}
+
+.fato--laranja {
+  --fundo: rgba(241, 152, 0, 0.14);
+  --forte: #a85d00;
+}
+
+.fato--azul {
+  --fundo: rgba(47, 111, 237, 0.1);
+  --forte: #1f56c3;
+}
+
+.fato--rosa {
+  --fundo: rgba(224, 27, 116, 0.09);
+  --forte: #c2185b;
+}
+
+.fato dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.fato dd {
+  margin: 0;
+  font-size: clamp(22px, 3.4vh, 34px);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--forte);
+}
+
+/* nome do cliente pode ser comprido: quebra linha em vez de vazar */
+.fato--nome dd {
+  font-size: clamp(19px, 2.8vh, 28px);
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ganhador-rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ganhador-prova {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+/* ---------- confete (comemoração, Confete.jsx) ---------- */
+
+.confete-tela {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* ---------- luz quando a roda para ---------- */
+
+.roda-brilho,
+.roda-onda {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.roda-brilho {
+  inset: -18%;
+  background: radial-gradient(closest-side, rgba(255, 201, 40, 0.55), rgba(241, 152, 0, 0.22) 55%, transparent 72%);
+  z-index: -1;
+}
+
+.roda-onda {
+  inset: -2%;
+  border: clamp(4px, 0.8vh, 8px) solid rgba(255, 201, 40, 0.9);
+  z-index: 3;
+}
+
+.roda--travada .roda-brilho {
+  animation: brilho 2.4s var(--ease) both;
+}
+
+.roda--travada .roda-onda {
+  animation: onda 1.2s var(--ease) both;
+}
+
+.roda--travada .roda-onda--2 {
+  border-color: rgba(224, 27, 116, 0.75);
+  animation-delay: 0.22s;
+}
+
+@keyframes brilho {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  18% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+}
+
+@keyframes onda {
+  from {
+    opacity: 0.95;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
+/* ---------- encerramento ---------- */
+
+.encerramento {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(24px, 4vh, 44px);
+  width: min(1100px, 100%);
+}
+
+.final {
+  width: 100%;
+}
+
+.final-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.final-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px 24px;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-top: 8px solid var(--cor);
+  box-shadow: 0 24px 50px -30px rgba(70, 20, 90, 0.45);
+  text-align: left;
+}
+
+.final-premio {
+  color: var(--cor-forte);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.final-nome {
+  font-size: clamp(22px, 3.2vh, 32px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.final-detalhe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.final-detalhe strong {
+  color: var(--ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.final-mensagem {
+  max-width: 60ch;
+  margin: clamp(24px, 4vh, 40px) auto 0;
+  text-align: center;
+  color: var(--ink-2);
+  font-size: clamp(16px, 2.1vh, 20px);
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+/* ---------- dicas de teclado ---------- */
+
+.dicas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  padding: 10px 16px 18px;
+  color: var(--ink-3);
+  font-size: 13px;
+  transition: opacity 0.3s var(--ease);
+}
+
+.dicas kbd {
+  margin-right: 6px;
+}
+
+/* ---------- modo apresentação ---------- */
+
+.app--apresentacao .barra,
+.app--apresentacao .dicas {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app--apresentacao.app--mouse .barra,
+.app--apresentacao.app--mouse .dicas {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.app--apresentacao:not(.app--mouse) {
+  cursor: none;
+}
+
+/* ---------- telas menores ---------- */
+
+@media (max-height: 760px) {
+  .dicas {
+    display: none;
+  }
+}
+
+/* Tela estreita ou em pé: roda em cima, informações embaixo. */
+@media (max-width: 1000px), (max-aspect-ratio: 5/4) {
+  .arena {
+    --roda: min(84vw, 50vh);
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 32px;
+  }
+
+  .arena-info {
+    width: min(620px, 100%);
+  }
+
+  .preparo,
+  .ganhador,
+  .ganhador-rodape,
+  .cabeca {
+    align-items: center;
+    text-align: center;
+  }
+
+  .numeros {
+    align-items: center;
+  }
+
+  .numeros-linha {
+    justify-content: center;
+  }
+
+  .ganhador-local {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .barra-sub,
+  .barra-marca .barra-divisor {
+    display: none;
+  }
+
+  .botao-barra {
+    position: relative;
+    width: 40px;
+    padding: 0;
+  }
+
+  .botao-barra span:not(.contador) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .botao-barra .contador {
+    position: absolute;
+    transform: translate(12px, -12px);
+  }
+
+  .barra-acoes .barra-divisor,
+  .dicas {
+    display: none;
+  }
+
+  .numeros {
+    gap: 4px 16px;
+  }
+
+  .numeros .ponto {
+    display: none;
+  }
+
+  .na-seta {
+    text-align: left;
+  }
+
+  .botao-sortear {
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .barra-nome {
+    display: none;
+  }
+
+  .barra-acoes {
+    gap: 4px;
+  }
+
+  .fato dd {
+    font-size: 20px;
+  }
+}
+
+/* tela de toque: não há teclado para mostrar */
+@media (hover: none) {
+  .botao-principal kbd {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ---------- de onde vêm os participantes (na barra do topo) ---------- */
+
+.fonte-dados {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  max-width: 340px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink-2);
+  font-size: 13px;
+  white-space: nowrap;
+  transition: border-color 0.15s;
+}
+
+.fonte-dados > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fonte-dados strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.fonte-dados:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.fonte-dados:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fonte-dados-ponto {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #16b07a; /* verde: planilha de verdade */
+}
+
+.fonte-dados--demo .fonte-dados-ponto {
+  background: #f19800; /* laranja: ainda nos dados de demonstração */
+}
+
+.botao-barra--principal {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+.botao-barra--principal:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(102, 16, 129, 0.12);
+}
+
+/* nome comprido do ganhador (a planilha real tem nome de 132 letras) */
+.ganhador-nome--medio {
+  font-size: clamp(32px, 5.6vh, 68px);
+}
+
+.ganhador-nome--longo {
+  font-size: clamp(26px, 4vh, 46px);
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 1100px) {
+  .fonte-dados {
+    display: none;
+  }
+}
+
+/* logo do Grupo Cardsinova na barra */
+.barra-logo {
+  display: block;
+  height: 38px;
+  width: auto;
+}
+
+@media (max-width: 420px) {
+  .barra-logo {
+    height: 30px;
+  }
+}
+
+/* ---------- automático: barra da pausa até o próximo sorteio ---------- */
+
+.auto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.auto-barra {
+  width: 220px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--surface-3);
+}
+
+.auto-barra span {
+  display: block;
+  height: 100%;
+  background: var(--grad-botao);
+  transform-origin: left center;
+  animation: encher linear both;
+}
+
+@keyframes encher {
+  from {
+    transform: scaleX(0);
+  }
+}

@@ -1,0 +1,125 @@
+/* Tokens: toda cor, fonte e medida sai daqui.
+   Versão 2 (2026-10-02): fundo branco e festa colorida, a pedido.
+   As cores da roda e dos cartões ficam em src/lib/cores.js. */
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-variable.woff2') format('woff2-variations');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f6f4f9;
+  --surface-3: #ece8f2;
+  --border: #ebe6f1;
+  --border-strong: #d8d1e2;
+
+  --ink: #1b1222;
+  --ink-2: #554b60;
+  --ink-3: #6e6479;
+
+  /* roxo da marca: botões, foco, seleção */
+  --accent: #661081;
+  --accent-strong: #661081;
+  --accent-strong-hover: #7a1a98;
+  --accent-soft: rgba(102, 16, 129, 0.08);
+  --accent-line: rgba(102, 16, 129, 0.25);
+  --on-accent: #ffffff;
+
+  /* laranja da marca, versão escura para texto em fundo branco */
+  --gold: #a85d00;
+  --gold-soft: rgba(241, 152, 0, 0.14);
+  --gold-line: rgba(241, 152, 0, 0.55);
+
+  --rosa: #e01b74;
+  --danger: #c0302f;
+  --veil: rgba(27, 18, 34, 0.34);
+  --shadow-pop: 0 30px 70px -30px rgba(70, 20, 90, 0.35);
+
+  /* degradês: o do texto e do botão vai do roxo ao rosa (texto branco lê bem
+     nas duas pontas); a faixa da festa passa por todas as cores */
+  --grad-titulo: linear-gradient(100deg, #661081 0%, #9c3fd6 30%, #e01b74 62%, #f19800 100%);
+  --grad-botao: linear-gradient(100deg, #661081 0%, #9c2aa8 55%, #d81b6e 100%);
+  --grad-festa: linear-gradient(
+    90deg,
+    #661081,
+    #9c3fd6,
+    #2f6fed,
+    #17b3d0,
+    #16b07a,
+    #ffc928,
+    #f19800,
+    #e01b74,
+    #661081
+  );
+
+  --font: 'Satoshi', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius-lg: 24px;
+  --radius: 14px;
+  --radius-sm: 10px;
+
+  /* curvas: saída rápida e assentamento lento; a de saída é mais curta */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.4, 0, 1, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent-strong);
+  color: var(--on-accent);
+}
+
+.so-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
