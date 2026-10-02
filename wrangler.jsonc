@@ -1,0 +1,16 @@
+// Configuração do Cloudflare (Workers com arquivos estáticos).
+// Sem este arquivo, o "npx wrangler deploy" do Cloudflare tentava adivinhar o projeto
+// lendo o vite.config.js e falhava ("Error parsing file: vite.config.js").
+{
+  // precisa ser o MESMO nome do Worker no painel do Cloudflare
+  "name": "sorteio",
+  "compatibility_date": "2026-10-01",
+  // gera o site (pasta dist) antes de publicar
+  "build": {
+    "command": "npm run build"
+  },
+  // o site é só arquivos prontos: nada de código rodando no servidor
+  "assets": {
+    "directory": "./dist"
+  }
+}

@@ -51,7 +51,12 @@ export default function App() {
   const [ganhadores, setGanhadores] = useState(() => ler('sorteio-ganhadores', []));
   // Planilha carregada (só o necessário: pedido, nome, valor e CPF/CNPJ mascarado).
   // Fica guardada no navegador: recarregar a página no meio da live não perde nada.
-  const [base, setBase] = useState(() => ler('sorteio-base', null));
+  // Planilha subida antes do filtro de cidades (sem `versao: 2`) é descartada: o site
+  // volta para a planilha padrão (já filtrada). Era o que fazia aparecer 1.241 clientes.
+  const [base, setBase] = useState(() => {
+    const guardada = ler('sorteio-base', null);
+    return guardada && guardada.versao === 2 ? guardada : null;
+  });
   const [som, setSom] = useState(() => ler('sorteio-som', true));
   const [gaveta, setGaveta] = useState(null);
   const [apresentacao, setApresentacao] = useState(false);
